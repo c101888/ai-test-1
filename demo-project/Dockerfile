@@ -6,6 +6,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
+# 构建阶段需要 devDependencies（tailwindcss/typescript）
+# Render 会在构建时注入 NODE_ENV=production，导致 npm ci 跳过 devDependencies
+# tailwindcss 在 devDependencies，缺失会导致 PostCSS 不处理 CSS → 样式丢失
+ENV NODE_ENV=development
+
 COPY package.json package-lock.json* ./
 RUN npm ci || npm install
 

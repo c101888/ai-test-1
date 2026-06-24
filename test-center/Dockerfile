@@ -5,11 +5,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# 构建阶段需要 devDependencies（tailwindcss/typescript），不能设置 NODE_ENV=production
+# 构建阶段需要 devDependencies（tailwindcss/typescript）
+# Render 会在构建时注入 NODE_ENV=production，导致 npm ci 跳过 devDependencies
+# tailwindcss 在 devDependencies，缺失会导致 PostCSS 不处理 CSS → 样式丢失
+ENV NODE_ENV=development
+
 COPY package.json package-lock.json* ./
 RUN npm ci || npm install
 
-# 复制源码并构建
+# 复制源码并构建（构建阶段保持 NODE_ENV=development，确保 PostCSS/Tailwind 正常运行）
 COPY . .
 RUN npm run build
 
