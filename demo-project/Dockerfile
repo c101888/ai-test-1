@@ -25,4 +25,4 @@ COPY --from=base /app ./
 RUN mkdir -p prisma
 
 EXPOSE 4010
-CMD ["sh", "-c", "npx prisma db push --skip-generate && npm start"]
+CMD ["sh", "-c", "npx prisma db push && npm start"]
