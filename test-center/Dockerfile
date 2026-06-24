@@ -1,12 +1,11 @@
-# test-center Dockerfile（Sealos 部署用）
-# 演示项目走纯剧本回放，无需 Playwright chromium
+# test-center Dockerfile
 FROM node:20-slim AS base
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 make g++ \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# 安装依赖（含 devDependencies，构建时需要 tailwindcss/typescript）
+# 构建阶段需要 devDependencies（tailwindcss/typescript），不能设置 NODE_ENV=production
 COPY package.json package-lock.json* ./
 RUN npm ci || npm install
 
@@ -16,14 +15,17 @@ RUN npm run build
 
 # 运行阶段
 FROM node:20-slim AS runner
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ \
-    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=4000
 
-COPY --from=base /app ./
+# 只复制运行时需要的文件
+COPY --from=base /app/package.json ./
+COPY --from=base /app/package-lock.json* ./
+COPY --from=base /app/.next ./.next
+COPY --from=base /app/public ./public
+COPY --from=base /app/next.config.ts ./
+COPY --from=base /app/node_modules ./node_modules
 RUN mkdir -p .data
 
 EXPOSE 4000
