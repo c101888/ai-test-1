@@ -1,14 +1,12 @@
 # Render Blueprint - 使用 ghcr.io 预构建镜像部署
-# 使用方法：在 Render 界面连接 GitHub 仓库后选择 "Use Blueprint" 即可
-
 services:
   - type: web
     name: test-center
-    env: docker
+    runtime: image
+    image:
+      imagePath: ghcr.io/c101888/test-center:latest
     region: singapore
     plan: free
-    image:
-      url: ghcr.io/c101888/test-center:latest
     envVars:
       - key: NODE_ENV
         value: production
@@ -19,11 +17,11 @@ services:
 
   - type: web
     name: demo-project
-    env: docker
+    runtime: image
+    image:
+      imagePath: ghcr.io/c101888/demo-project:latest
     region: singapore
     plan: free
-    image:
-      url: ghcr.io/c101888/demo-project:latest
     envVars:
       - key: NODE_ENV
         value: production
