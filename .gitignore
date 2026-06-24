@@ -1,0 +1,40 @@
+# 备份目录
+/backup/
+
+# TRAE 内部文件
+/.trae/
+
+# 验证截图（体积大，不需要推到 GitHub）
+/test-center/verify-shots/
+
+# 验证脚本（部署不需要）
+/test-center/verify-*.mjs
+
+# 依赖
+node_modules/
+
+# 构建产物
+.next/
+out/
+build/
+
+# 本地数据
+.data/
+*.db
+*.db-journal
+
+# 环境变量
+.env*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+*.pem
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# 日志
+npm-debug.log*
+yarn-debug.log*

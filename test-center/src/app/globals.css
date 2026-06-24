@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* ============================================================
+   深色主题设计系统 —— AI 项目智能测试中心
+   严肃的 AI 测试控制台美学：深色背景 + 单一薄荷绿强调色
+   ============================================================ */
+:root {
+  --bg: #0a0d14;
+  --bg-2: #0e1320;
+  --surface: #131826;
+  --surface-2: #1a2030;
+  --border: #232a3d;
+  --border-soft: #1a2030;
+  --text: #e8ecf4;
+  --text-2: #9aa3b8;
+  --text-3: #5d6680;
+  --accent: #00e5a0;
+  --accent-dim: rgba(0, 229, 160, 0.12);
+  --critical: #ff5470;
+  --critical-dim: rgba(255, 84, 112, 0.12);
+  --warning: #ffb547;
+  --warning-dim: rgba(255, 181, 71, 0.12);
+  --info: #4d7cff;
+  --info-dim: rgba(77, 124, 255, 0.12);
+}
+
+/* 将设计令牌映射为 Tailwind v4 工具类 token：
+   bg-bg / bg-surface / border-border / text-text / text-accent ... */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-accent: var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-critical: var(--critical);
+  --color-critical-dim: var(--critical-dim);
+  --color-warning: var(--warning);
+  --color-warning-dim: var(--warning-dim);
+  --color-info: var(--info);
+  --color-info-dim: var(--info-dim);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jbmono), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 选区与滚动条：强化控制台质感 */
+::selection {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-2);
+  border-radius: 6px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border);
+}
+
+/* 细网格背景纹理，用于页面标题区 */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(35, 42, 61, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(35, 42, 61, 0.4) 1px, transparent 1px);
+  background-size: 32px 32px;
+}

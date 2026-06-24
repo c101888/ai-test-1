@@ -1,0 +1,20 @@
+services:
+  test-center:
+    build: ./test-center
+    ports:
+      - "4000:4000"
+    volumes:
+      - test-center-data:/app/.data
+    restart: unless-stopped
+
+  demo-project:
+    build: ./demo-project
+    ports:
+      - "4010:4010"
+    volumes:
+      - demo-project-db:/app/prisma
+    restart: unless-stopped
+
+volumes:
+  test-center-data:
+  demo-project-db:

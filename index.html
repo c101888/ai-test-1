@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI项目智能测试中心 · TRAE AI 创造力大赛</title>
+<meta name="description" content="在用户发现之前，先找到AI代码里的业务漏洞。AI项目智能测试中心 —— 不只是检测报错，而是从真实用户视角主动挖掘隐藏的业务Bug。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0a0d14;
+    --bg-2:#0e1320;
+    --surface:#131826;
+    --surface-2:#1a2030;
+    --border:#232a3d;
+    --border-soft:#1a2030;
+    --text:#e8ecf4;
+    --text-2:#9aa3b8;
+    --text-3:#5d6680;
+    --accent:#00e5a0;
+    --accent-dim:rgba(0,229,160,.12);
+    --accent-2:#4d7cff;
+    --critical:#ff5470;
+    --critical-dim:rgba(255,84,112,.12);
+    --warning:#ffb547;
+    --warning-dim:rgba(255,181,71,.12);
+    --info:#4d7cff;
+    --info-dim:rgba(77,124,255,.12);
+    --max:1240px;
+    --radius:14px;
+    --radius-sm:8px;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#04130d}
+
+  /* ===== Layout ===== */
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+  @media(max-width:640px){.wrap{padding:0 18px}}
+
+  section{position:relative}
+
+  /* ===== Nav ===== */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,13,20,.78);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.01em}
+  .brand-mark{
+    width:28px;height:28px;border-radius:7px;
+    background:linear-gradient(135deg,var(--accent),#00b27d);
+    display:grid;place-items:center;
+    box-shadow:0 0 0 1px rgba(0,229,160,.3),0 6px 20px -8px rgba(0,229,160,.5);
+  }
+  .brand-mark svg{width:16px;height:16px}
+  .brand-name{font-size:15px}
+  .brand-name span{color:var(--text-2);font-weight:500}
+  .nav-links{display:flex;align-items:center;gap:28px;font-size:14px;color:var(--text-2)}
+  .nav-links a{transition:color .15s}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{
+    padding:8px 16px;border-radius:8px;
+    background:var(--accent);color:#04130d;
+    font-weight:600;font-size:13.5px;
+    transition:transform .15s,box-shadow .15s;
+  }
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px -8px rgba(0,229,160,.6)}
+  @media(max-width:860px){.nav-links{display:none}}
+
+  /* ===== Hero ===== */
+  .hero{
+    position:relative;
+    padding:88px 0 72px;
+    border-bottom:1px solid var(--border-soft);
+    overflow:hidden;
+  }
+  .hero-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(900px 500px at 78% -10%,rgba(0,229,160,.10),transparent 60%),
+      radial-gradient(700px 400px at 12% 110%,rgba(77,124,255,.08),transparent 60%);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:48px 48px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000 30%,transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000 30%,transparent 80%);
+    pointer-events:none;
+  }
+  .hero-inner{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  @media(max-width:980px){.hero-inner{grid-template-columns:1fr;gap:48px}.hero{padding:64px 0 56px}}
+
+  .tag{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 12px;border-radius:999px;
+    background:var(--accent-dim);
+    border:1px solid rgba(0,229,160,.25);
+    font-size:12.5px;color:var(--accent);
+    font-family:var(--mono);font-weight:500;
+    letter-spacing:.02em;
+  }
+  .tag .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+  .hero h1{
+    font-size:clamp(34px,5vw,58px);
+    line-height:1.06;letter-spacing:-.025em;
+    font-weight:800;margin:22px 0 0;
+  }
+  .hero h1 .hl{
+    background:linear-gradient(120deg,var(--accent) 0%,#7af5c8 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lead{
+    font-size:17.5px;color:var(--text-2);
+    margin-top:22px;max-width:540px;line-height:1.65;
+  }
+  .hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:10px;
+    font-weight:600;font-size:14.5px;
+    transition:transform .15s,box-shadow .15s,background .15s;
+    cursor:pointer;border:none;
+  }
+  .btn-primary{background:var(--accent);color:#04130d}
+  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 12px 30px -10px rgba(0,229,160,.55)}
+  .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-ghost:hover{border-color:var(--text-3);background:var(--surface)}
+
+  .hero-meta{
+    margin-top:38px;display:flex;gap:32px;flex-wrap:wrap;
+    padding-top:24px;border-top:1px solid var(--border-soft);
+  }
+  .hero-meta div{font-size:13px;color:var(--text-3);font-family:var(--mono)}
+  .hero-meta strong{display:block;color:var(--text);font-size:14px;font-weight:600;margin-bottom:2px;font-family:var(--sans)}
+
+  /* Hero console mockup */
+  .console{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    box-shadow:0 30px 80px -30px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.02) inset;
+    overflow:hidden;
+    font-family:var(--mono);
+  }
+  .console-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:12px 16px;border-bottom:1px solid var(--border);
+    background:var(--bg-2);
+  }
+  .console-bar .dots{display:flex;gap:6px}
+  .console-bar .dots i{width:10px;height:10px;border-radius:50%;background:#2a3142;display:block}
+  .console-bar .title{font-size:12px;color:var(--text-3);margin-left:8px}
+  .console-bar .status{margin-left:auto;font-size:11px;color:var(--accent);display:flex;align-items:center;gap:6px}
+  .console-bar .status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  .console-body{padding:18px}
+  .console-row{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:12.5px;border-bottom:1px dashed var(--border-soft)}
+  .console-row:last-child{border-bottom:none}
+  .console-row .ts{color:var(--text-3);width:54px;flex-shrink:0}
+  .console-row .lvl{font-size:10.5px;padding:2px 7px;border-radius:4px;font-weight:600;flex-shrink:0;width:54px;text-align:center}
+  .lvl-crit{background:var(--critical-dim);color:var(--critical)}
+  .lvl-warn{background:var(--warning-dim);color:var(--warning)}
+  .lvl-info{background:var(--info-dim);color:var(--info)}
+  .lvl-pass{background:var(--accent-dim);color:var(--accent)}
+  .console-row .msg{color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .console-row .msg b{color:var(--text);font-weight:600}
+
+  .console-progress{margin-top:14px;padding-top:14px;border-top:1px solid var(--border-soft)}
+  .console-progress .pl{display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);margin-bottom:8px}
+  .bar{height:6px;background:var(--bg-2);border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#7af5c8);border-radius:3px;width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+  .bar.warn i{background:linear-gradient(90deg,var(--warning),#ffd28a)}
+
+  /* ===== Section base ===== */
+  .sec{padding:96px 0;border-bottom:1px solid var(--border-soft)}
+  @media(max-width:640px){.sec{padding:64px 0}}
+  .sec-head{max-width:760px;margin-bottom:52px}
+  .sec-eyebrow{
+    font-family:var(--mono);font-size:12px;color:var(--accent);
+    letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+    display:flex;align-items:center;gap:10px;margin-bottom:18px;
+  }
+  .sec-eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .sec h2{font-size:clamp(28px,3.6vw,42px);line-height:1.12;letter-spacing:-.02em;font-weight:700}
+  .sec h2 .hl{color:var(--accent)}
+  .sec-desc{color:var(--text-2);font-size:16.5px;margin-top:18px;max-width:680px}
+
+  /* ===== Pain points ===== */
+  .pains{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-soft);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden}
+  @media(max-width:860px){.pains{grid-template-columns:1fr}}
+  .pain{background:var(--surface);padding:32px 28px;transition:background .2s}
+  .pain:hover{background:var(--surface-2)}
+  .pain-num{font-family:var(--mono);font-size:12px;color:var(--text-3);margin-bottom:18px}
+  .pain h3{font-size:18px;font-weight:600;margin-bottom:10px;letter-spacing:-.01em}
+  .pain p{color:var(--text-2);font-size:14.5px;line-height:1.65}
+  .pain .icon{width:36px;height:36px;border-radius:9px;background:var(--critical-dim);display:grid;place-items:center;margin-bottom:20px;color:var(--critical)}
+  .pain .icon svg{width:18px;height:18px}
+
+  /* ===== Case study: infinite sign-in bug ===== */
+  .case{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  @media(max-width:980px){.case{grid-template-columns:1fr;gap:36px}}
+
+  .case-narr h3{font-size:22px;font-weight:600;margin-bottom:16px;letter-spacing:-.01em}
+  .case-narr p{color:var(--text-2);font-size:15.5px;margin-bottom:16px;line-height:1.7}
+  .case-narr .quote{
+    border-left:2px solid var(--critical);
+    padding:14px 18px;background:var(--critical-dim);
+    border-radius:0 8px 8px 0;margin:24px 0;
+    font-size:14.5px;color:var(--text);
+  }
+  .case-narr .quote em{color:var(--critical);font-style:normal;font-weight:600}
+
+  .case-surface{display:flex;flex-direction:column;gap:14px}
+  .surface-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:20px;
+  }
+  .surface-card h4{
+    font-size:12px;color:var(--text-3);font-family:var(--mono);
+    text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .surface-card h4 .badge{padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+  .badge-ok{background:var(--accent-dim);color:var(--accent)}
+  .badge-fail{background:var(--critical-dim);color:var(--critical)}
+
+  .check-list{display:flex;flex-direction:column;gap:10px;font-size:13.5px;font-family:var(--mono)}
+  .check-list div{display:flex;align-items:center;gap:10px;color:var(--text-2)}
+  .check-list .ok{color:var(--accent)}
+  .check-list .bad{color:var(--critical)}
+  .check-list svg{width:14px;height:14px;flex-shrink:0}
+
+  .req-demo{
+    font-family:var(--mono);font-size:12px;
+    background:var(--bg-2);border-radius:8px;padding:14px;
+    border:1px solid var(--border-soft);
+  }
+  .req-demo .line{display:flex;gap:10px;padding:3px 0}
+  .req-demo .m{color:var(--info)}
+  .req-demo .u{color:var(--accent)}
+  .req-demo .k{color:var(--text-3)}
+  .req-demo .v{color:var(--warning)}
+  .req-demo .c{color:var(--text-3)}
+
+  /* ===== Process timeline ===== */
+  .timeline{
+    position:relative;
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:1px;background:var(--border-soft);
+    border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden;
+  }
+  @media(max-width:860px){.timeline{grid-template-columns:1fr}}
+  .step{
+    background:var(--surface);padding:28px 26px;
+    position:relative;transition:background .2s;
+  }
+  .step:hover{background:var(--surface-2)}
+  .step-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .step-no{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--bg-2);border:1px solid var(--border);
+    display:grid;place-items:center;
+    font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);
+    flex-shrink:0;
+  }
+  .step.phase-2 .step-no{color:var(--info)}
+  .step.phase-3 .step-no{color:var(--warning)}
+  .step-tag{font-family:var(--mono);font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em}
+  .step h4{font-size:16px;font-weight:600;margin-bottom:8px;letter-spacing:-.01em}
+  .step p{color:var(--text-2);font-size:13.5px;line-height:1.6}
+  .step-arrow{
+    position:absolute;top:50%;right:-1px;transform:translateY(-50%);
+    color:var(--border);z-index:2;
+  }
+  .step:last-child .step-arrow{display:none}
+  @media(max-width:860px){.step-arrow{display:none}}
+
+  .phase-label{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:11.5px;
+    padding:5px 11px;border-radius:6px;margin-bottom:18px;
+  }
+  .phase-1{background:var(--accent-dim);color:var(--accent)}
+  .phase-2{background:var(--info-dim);color:var(--info)}
+  .phase-3{background:var(--warning-dim);color:var(--warning)}
+
+  /* ===== Comparison table ===== */
+  .compare{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:1px;background:var(--border-soft);
+    border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden;
+  }
+  @media(max-width:860px){.compare{grid-template-columns:1fr}}
+  .compare-col{background:var(--surface);padding:32px 30px}
+  .compare-col.adv{background:linear-gradient(180deg,rgba(0,229,160,.04),var(--surface) 40%)}
+  .compare-col h3{font-size:20px;font-weight:600;margin-bottom:6px;letter-spacing:-.01em}
+  .compare-col .sub{color:var(--text-3);font-size:13px;font-family:var(--mono);margin-bottom:24px}
+  .compare-col.adv h3{color:var(--accent)}
+  .compare-row{
+    display:grid;grid-template-columns:90px 1fr;gap:16px;
+    padding:14px 0;border-bottom:1px dashed var(--border-soft);
+    font-size:14px;
+  }
+  .compare-row:last-child{border-bottom:none}
+  .compare-row .k{color:var(--text-3);font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+  .compare-row .v{color:var(--text-2)}
+  .compare-row .v b{color:var(--text);font-weight:600}
+
+  /* ===== Analysis panel ===== */
+  .analysis{display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:start}
+  @media(max-width:980px){.analysis{grid-template-columns:1fr}}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
+  }
+  .panel-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 20px;border-bottom:1px solid var(--border);
+    background:var(--bg-2);
+  }
+  .panel-head h4{font-size:13px;font-family:var(--mono);color:var(--text-2);font-weight:500;letter-spacing:.04em}
+  .panel-head .meta{font-size:11px;color:var(--text-3);font-family:var(--mono)}
+  .panel-body{padding:22px}
+
+  .feature-map{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:560px){.feature-map{grid-template-columns:repeat(2,1fr)}}
+  .feat{
+    padding:12px;border-radius:8px;
+    background:var(--bg-2);border:1px solid var(--border-soft);
+    font-size:12.5px;text-align:center;
+    transition:border-color .15s;
+  }
+  .feat .n{font-family:var(--mono);font-size:11px;color:var(--text-3);display:block;margin-bottom:4px}
+  .feat.risk{border-color:rgba(255,84,112,.3);background:var(--critical-dim)}
+  .feat.risk .n{color:var(--critical)}
+  .feat.warn{border-color:rgba(255,181,71,.3);background:var(--warning-dim)}
+  .feat.warn .n{color:var(--warning)}
+
+  .info-list{display:flex;flex-direction:column;gap:14px}
+  .info-row{display:grid;grid-template-columns:110px 1fr;gap:14px;font-size:13.5px;padding:10px 0;border-bottom:1px dashed var(--border-soft)}
+  .info-row:last-child{border-bottom:none}
+  .info-row .k{color:var(--text-3);font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+  .info-row .v{color:var(--text);font-weight:500}
+  .info-row .v .pill{display:inline-block;padding:2px 8px;border-radius:4px;background:var(--bg-2);font-family:var(--mono);font-size:11px;margin:2px 4px 2px 0;color:var(--text-2)}
+
+  /* ===== Test report & AI fix pack ===== */
+  .reports{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media(max-width:980px){.reports{grid-template-columns:1fr}}
+
+  .issue-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
+    border-left:3px solid var(--critical);
+  }
+  .issue-card.high{border-left-color:var(--warning)}
+  .issue-head{padding:18px 22px;border-bottom:1px solid var(--border-soft);background:var(--bg-2)}
+  .issue-head .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .issue-id{font-family:var(--mono);font-size:11.5px;color:var(--text-3)}
+  .sev{
+    font-family:var(--mono);font-size:10.5px;font-weight:600;
+    padding:3px 9px;border-radius:4px;letter-spacing:.05em;
+  }
+  .sev-crit{background:var(--critical-dim);color:var(--critical)}
+  .sev-high{background:var(--warning-dim);color:var(--warning)}
+  .issue-head h4{font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+  .issue-body{padding:18px 22px;display:flex;flex-direction:column;gap:16px}
+  .issue-sec .lbl{font-family:var(--mono);font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+  .issue-sec .cnt{font-size:13.5px;color:var(--text-2);line-height:1.65}
+  .issue-sec .cnt ol{padding-left:18px}
+  .issue-sec .cnt ol li{margin-bottom:4px}
+  .issue-sec .cnt code{font-family:var(--mono);font-size:12px;background:var(--bg-2);padding:1px 6px;border-radius:4px;color:var(--accent)}
+
+  .fix-pack{
+    background:var(--bg-2);border:1px solid var(--border-soft);
+    border-radius:8px;padding:14px;font-family:var(--mono);font-size:12px;
+    color:var(--text-2);line-height:1.7;
+  }
+  .fix-pack .c{color:var(--text-3)}
+  .fix-pack .k{color:var(--info)}
+  .fix-pack .s{color:var(--accent)}
+  .fix-pack .v{color:var(--warning)}
+  .fix-pack .copy{
+    float:right;font-family:var(--sans);font-size:11px;
+    color:var(--accent);cursor:pointer;padding:2px 8px;
+    border:1px solid var(--border);border-radius:4px;
+  }
+  .fix-pack .copy:hover{background:var(--surface)}
+
+  /* ===== Target users ===== */
+  .users{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:860px){.users{grid-template-columns:1fr}}
+  .user-card{
+    padding:28px 26px;border:1px solid var(--border);
+    border-radius:var(--radius);background:var(--surface);
+    transition:transform .2s,border-color .2s;
+  }
+  .user-card:hover{transform:translateY(-2px);border-color:var(--text-3)}
+  .user-card .role{font-family:var(--mono);font-size:11.5px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+  .user-card h4{font-size:18px;font-weight:600;margin-bottom:10px;letter-spacing:-.01em}
+  .user-card p{color:var(--text-2);font-size:14px;line-height:1.65}
+
+  /* ===== Value ===== */
+  .values{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-soft);border:1px solid var(--border-soft);border-radius:var(--radius);overflow:hidden}
+  @media(max-width:860px){.values{grid-template-columns:1fr}}
+  .value{background:var(--surface);padding:32px 28px}
+  .value .num{font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:16px}
+  .value h4{font-size:17px;font-weight:600;margin-bottom:10px;letter-spacing:-.01em}
+  .value p{color:var(--text-2);font-size:14px;line-height:1.65}
+
+  /* ===== Roadmap ===== */
+  .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:860px){.roadmap{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.roadmap{grid-template-columns:1fr}}
+  .road-card{
+    padding:22px 20px;border:1px solid var(--border-soft);
+    border-radius:var(--radius-sm);background:var(--surface);
+    position:relative;
+  }
+  .road-card .phase{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-bottom:10px}
+  .road-card h4{font-size:15px;font-weight:600;margin-bottom:8px}
+  .road-card p{color:var(--text-2);font-size:13px;line-height:1.6}
+  .road-card.now{border-color:var(--accent);background:linear-gradient(180deg,rgba(0,229,160,.06),var(--surface) 60%)}
+  .road-card.now .phase{color:var(--accent)}
+
+  /* ===== Final CTA ===== */
+  .cta-sec{padding:96px 0;border-bottom:1px solid var(--border-soft);position:relative;overflow:hidden}
+  .cta-bg{position:absolute;inset:0;background:radial-gradient(800px 400px at 50% 50%,rgba(0,229,160,.10),transparent 65%);pointer-events:none}
+  .cta-inner{position:relative;text-align:center;max-width:720px;margin:0 auto}
+  .cta-inner h2{font-size:clamp(28px,4vw,44px);line-height:1.15;letter-spacing:-.02em;font-weight:700;margin-bottom:20px}
+  .cta-inner h2 .hl{color:var(--accent)}
+  .cta-inner p{color:var(--text-2);font-size:17px;margin-bottom:36px}
+  .cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .cta-note{margin-top:28px;font-family:var(--mono);font-size:12px;color:var(--text-3)}
+
+  /* ===== Footer ===== */
+  footer{padding:40px 0;border-top:1px solid var(--border-soft)}
+  .foot-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+  .foot-inner .left{font-size:13px;color:var(--text-3)}
+  .foot-inner .left b{color:var(--text-2);font-weight:500}
+  .foot-inner .right{font-family:var(--mono);font-size:12px;color:var(--text-3)}
+
+  /* ===== Reveal animation ===== */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.bar i{transition:none}}
+
+  /* hero stagger */
+  .hero-stagger > *{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero-stagger > *:nth-child(1){animation-delay:.05s}
+  .hero-stagger > *:nth-child(2){animation-delay:.15s}
+  .hero-stagger > *:nth-child(3){animation-delay:.25s}
+  .hero-stagger > *:nth-child(4){animation-delay:.35s}
+  .hero-stagger > *:nth-child(5){animation-delay:.45s}
+  .hero-stagger > *:nth-child(6){animation-delay:.55s}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.hero-stagger > *{opacity:1;transform:none;animation:none}}
+
+  .console{opacity:0;transform:translateY(20px) scale(.98);animation:consoleIn .9s cubic-bezier(.2,.7,.2,1) .3s forwards}
+  @keyframes consoleIn{to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.console{opacity:1;transform:none;animation:none}}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#04130d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 5-3.5 7.5-8.5 9C7.5 19.5 4 17 4 12V6l8.5-3L21 6v6z"/></svg>
+      </span>
+      <span class="brand-name">AI项目智能测试中心 <span>· TestOps</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#pain">痛点</a>
+      <a href="#case">案例</a>
+      <a href="#flow">流程</a>
+      <a href="#compare">测试对比</a>
+      <a href="#report">报告示例</a>
+      <a href="#users">目标用户</a>
+    </div>
+    <a href="#cta" class="nav-cta">提交项目</a>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-stagger">
+      <span class="tag"><span class="dot"></span>TRAE AI 创造力大赛 · 学习工作赛道</span>
+      <h1>在用户发现之前，<br/>先找到 AI 代码里的<br/><span class="hl">业务漏洞</span>。</h1>
+      <p class="lead">AI项目智能测试中心不只是检测报错。它读取你的代码与文档，从真实用户视角主动挖掘"能运行、但业务逻辑已崩"的隐藏 Bug —— 重复签到、无限领积分、流程绕过、越权访问。</p>
+      <div class="hero-cta">
+        <a href="#cta" class="btn btn-primary">
+          提交项目开始测试
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#case" class="btn btn-ghost">查看无限签到 Bug 案例</a>
+      </div>
+      <div class="hero-meta">
+        <div><strong>9 步闭环</strong>从分析到回归复测</div>
+        <div><strong>2 层测试</strong>基础测试 + 高级业务测试</div>
+        <div><strong>1 套指令</strong>可直接交给编程 AI</div>
+      </div>
+    </div>
+
+    <!-- Console mockup -->
+    <div class="console" aria-hidden="true">
+      <div class="console-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <span class="title">test-runner · advanced-business-scan</span>
+        <span class="status">运行中</span>
+      </div>
+      <div class="console-body">
+        <div class="console-row"><span class="ts">00:12</span><span class="lvl lvl-pass">PASS</span><span class="msg">基础测试 · 页面加载 / 导航 / 表单校验</span></div>
+        <div class="console-row"><span class="ts">00:18</span><span class="lvl lvl-pass">PASS</span><span class="msg">基础测试 · 权限校验 / 数据持久化</span></div>
+        <div class="console-row"><span class="ts">00:31</span><span class="lvl lvl-warn">WARN</span><span class="msg">高级测试 · 检测到 <b>签到接口无频率限制</b></span></div>
+        <div class="console-row"><span class="ts">00:32</span><span class="lvl lvl-crit">CRIT</span><span class="msg">高级测试 · <b>同一用户 100 次连续签到成功</b></span></div>
+        <div class="console-row"><span class="ts">00:34</span><span class="lvl lvl-crit">CRIT</span><span class="msg">高级测试 · <b>积分余额异常增长 +10000</b></span></div>
+        <div class="console-row"><span class="ts">00:36</span><span class="lvl lvl-info">INFO</span><span class="msg">已生成修复指令包 · issue-001.md</span></div>
+        <div class="console-row"><span class="ts">00:37</span><span class="lvl lvl-info">INFO</span><span class="msg">等待用户修复后执行针对性复测…</span></div>
+        <div class="console-progress">
+          <div class="pl"><span>测试进度</span><span>7 / 9 · 高级业务测试阶段</span></div>
+          <div class="bar warn"><i data-w="77"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== PAIN POINTS ===== -->
+<section class="sec" id="pain">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">用户痛点</div>
+      <h2>AI 生成的项目"看起来能跑"，<br/>但<span class="hl">业务逻辑千疮百孔</span>。</h2>
+      <p class="sec-desc">代码检测工具只看报错，而真正击穿产品的，是那些控制台无报错、接口返回 200、数据库正常写入，但业务规则已经被绕过的隐藏 Bug。</p>
+    </div>
+
+    <div class="pains reveal">
+      <div class="pain">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        </div>
+        <div class="pain-num">PAIN · 01</div>
+        <h3>能运行 ≠ 业务正确</h3>
+        <p>AI 生成的签到、积分、订单、权限功能大多能跑通主流程，但缺少频率限制、状态校验、并发控制。普通用户点几下就能绕过整个业务规则。</p>
+      </div>
+      <div class="pain">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+        </div>
+        <div class="pain-num">PAIN · 02</div>
+        <h3>非技术用户无法识别</h3>
+        <p>个人开发者、创业者、小团队往往没有测试工程师。他们看到页面正常、按钮可点，就以为项目完成了，直到线上事故才意识到问题。</p>
+      </div>
+      <div class="pain">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        </div>
+        <div class="pain-num">PAIN · 03</div>
+        <h3>事后修复成本极高</h3>
+        <p>积分体系被击穿、订单重复创建、越权数据泄露 —— 这些 Bug 一旦上线，往往已经造成真实损失。修复时还要回溯脏数据、补业务规则、做回归。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CASE STUDY ===== -->
+<section class="sec" id="case">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">典型案例 · 签到积分 Bug</div>
+      <h2>一个<span class="hl">没有任何报错</span>的 Bug，<br/>却能在一夜之间击穿整个积分体系。</h2>
+      <p class="sec-desc">这是 AI 生成项目里最常见、最隐蔽的一类业务漏洞。所有技术指标都正常，但业务规则已经形同虚设。</p>
+    </div>
+
+    <div class="case">
+      <div class="case-narr reveal">
+        <h3>场景：每日签到领积分</h3>
+        <p>一个用 AI 生成的积分商城项目，包含"每日签到 +10 积分"功能。开发者在本地测试时，点击签到按钮，接口返回成功，数据库新增一条记录，积分余额正确增加。一切看起来完美。</p>
+        <div class="quote">
+          <em>真相是：</em>签到接口没有任何频率限制。同一用户可以在一天内连续调用 <code style="font-family:var(--mono);font-size:13px;background:rgba(255,84,112,.15);padding:1px 6px;border-radius:4px;color:var(--critical)">/api/sign</code> 接口 1000 次，瞬间获得 10000 积分，直接兑换商城里最贵的商品。
+        </div>
+        <p>更可怕的是 —— 按钮、接口、数据库、控制台，<strong style="color:var(--text)">全部没有报错</strong>。传统的代码检测工具会直接放行，因为它"看起来"完全正确。</p>
+        <p>AI项目智能测试中心会怎么做？它从真实用户（甚至是恶意用户）的视角出发，模拟连续点击、跨会话重复请求、并发签到、修改客户端时间等边界行为，主动暴露这个漏洞，并生成可直接交给编程 AI 的修复指令。</p>
+      </div>
+
+      <div class="case-surface reveal">
+        <div class="surface-card">
+          <h4>表面检查 · 全部通过 <span class="badge badge-ok">5/5 OK</span></h4>
+          <div class="check-list">
+            <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>页面渲染正常，按钮可点击</div>
+            <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>接口返回 200，JSON 结构正确</div>
+            <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>数据库签到记录正常写入</div>
+            <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>积分余额正确 +10</div>
+            <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>控制台无任何报错</div>
+          </div>
+        </div>
+
+        <div class="surface-card" style="border-color:rgba(255,84,112,.3)">
+          <h4>高级业务测试 · 发现致命漏洞 <span class="badge badge-fail">CRITICAL</span></h4>
+          <div class="req-demo">
+            <div class="line"><span class="c"># 模拟真实用户连续点击签到</span></div>
+            <div class="line"><span class="k">for</span> i <span class="k">in</span> range(<span class="v">100</span>):</div>
+            <div class="line">&nbsp;&nbsp;<span class="m">POST</span> <span class="u">/api/sign</span></div>
+            <div class="line">&nbsp;&nbsp;<span class="c"># → 200 OK · 积分 +10</span></div>
+            <div class="line">&nbsp;&nbsp;<span class="c"># → 200 OK · 积分 +10</span></div>
+            <div class="line">&nbsp;&nbsp;<span class="c"># → 200 OK · 积分 +10 …</span></div>
+            <div class="line" style="margin-top:6px"><span class="c"># 结果：100 次请求全部成功</span></div>
+            <div class="line"><span class="c"># 用户余额：0 → 1000 积分</span></div>
+            <div class="line"><span class="c"># 业务规则：已击穿 ❌</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS FLOW ===== -->
+<section class="sec" id="flow">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">产品核心流程</div>
+      <h2>9 步闭环：从读取代码，<br/>到<span class="hl">回归复测</span>。</h2>
+      <p class="sec-desc">基础测试验证功能可用，高级业务测试挖掘隐藏漏洞。每一轮发现问题都输出报告与可直接交给编程 AI 的修复指令，修复后自动复测，直到闭环。</p>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="step">
+        <div class="step-head">
+          <div class="step-no">01</div>
+          <div class="step-tag">阶段一 · 接入</div>
+        </div>
+        <h4>授权读取项目</h4>
+        <p>授权读取项目代码目录，或上传完整开发文档，也可同时提供二者，让 AI 同时理解代码实现与业务意图。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step">
+        <div class="step-head">
+          <div class="step-no">02</div>
+          <div class="step-tag">阶段一 · 分析</div>
+        </div>
+        <h4>AI 项目分析</h4>
+        <p>分析项目类型、主要功能、用户角色、技术环境、数据库结构、业务状态，并标记高风险区域（积分、支付、权限）。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step">
+        <div class="step-head">
+          <div class="step-no">03</div>
+          <div class="step-tag">阶段一 · 基础测试</div>
+        </div>
+        <h4>执行基础测试</h4>
+        <p>验证页面加载、导航跳转、表单校验、权限控制、数据持久化等基础功能是否可用。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step">
+        <div class="step-head">
+          <div class="step-no">04</div>
+          <div class="step-tag">阶段一 · 报告</div>
+        </div>
+        <h4>输出问题报告 + 修复指令</h4>
+        <p>基础测试发现的问题，输出包含复现步骤、证据截图、影响范围的可读报告，并生成可直接粘贴给编程 AI 的修复指令。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step">
+        <div class="step-head">
+          <div class="step-no">05</div>
+          <div class="step-tag">阶段一 · 复测</div>
+        </div>
+        <h4>用户修复后复测</h4>
+        <p>用户将修复指令交给编程 AI 完成修复后，重新执行基础测试，确认问题已解决且未引入新问题。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step phase-2">
+        <div class="step-head">
+          <div class="step-no">06</div>
+          <div class="step-tag">阶段二 · 高级测试</div>
+        </div>
+        <h4>进入高级业务 Bug 测试</h4>
+        <p>基础测试全部通过后，进入高级业务测试阶段 —— 这才是真正发现"能运行但已崩"漏洞的环节。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step phase-2">
+        <div class="step-head">
+          <div class="step-no">07</div>
+          <div class="step-tag">阶段二 · 深度挖掘</div>
+        </div>
+        <h4>真实用户视角测试</h4>
+        <p>从真实用户甚至恶意用户视角，测试重复点击、流程绕过、状态丢失、无限领取奖励、越权访问、跨功能逻辑冲突等隐藏问题。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step phase-2">
+        <div class="step-head">
+          <div class="step-no">08</div>
+          <div class="step-tag">阶段二 · 报告</div>
+        </div>
+        <h4>输出高级报告 + 修复包</h4>
+        <p>输出高级业务测试报告，包含每个漏洞的业务影响、复现路径、证据，以及一整套可直接交给编程 AI 的修复指南包。</p>
+        <svg class="step-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="step phase-3">
+        <div class="step-head">
+          <div class="step-no">09</div>
+          <div class="step-tag">阶段三 · 回归</div>
+        </div>
+        <h4>针对性复测 + 综合回归</h4>
+        <p>修复后执行针对性复测，确认高级 Bug 已修复，并运行综合回归测试，确保修复未破坏其他业务流程。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMPARISON ===== -->
+<section class="sec" id="compare">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">两层测试 · 对比</div>
+      <h2>基础测试验证"能用"，<br/><span class="hl">高级业务测试</span>验证"不会被绕过"。</h2>
+      <p class="sec-desc">两层测试覆盖完全不同的问题域。基础测试是底线，高级业务测试才是 AI 项目真正需要的护城河。</p>
+    </div>
+
+    <div class="compare reveal">
+      <div class="compare-col">
+        <h3>基础测试</h3>
+        <div class="sub">BASIC · 验证功能可用性</div>
+        <div class="compare-row"><div class="k">目标</div><div class="v">验证功能在正常使用下是否可用</div></div>
+        <div class="compare-row"><div class="k">视角</div><div class="v"><b>开发者视角</b> · 按预期路径操作</div></div>
+        <div class="compare-row"><div class="k">方法</div><div class="v">页面加载、导航跳转、表单校验、权限控制、数据持久化</div></div>
+        <div class="compare-row"><div class="k">发现</div><div class="v">显性错误 · 报错、白屏、404、数据丢失</div></div>
+        <div class="compare-row"><div class="k">典型问题</div><div class="v">登录后跳转错误、表单提交失败、权限校验缺失</div></div>
+        <div class="compare-row"><div class="k">价值</div><div class="v">确保项目"能跑起来"</div></div>
+      </div>
+      <div class="compare-col adv">
+        <h3>高级业务测试</h3>
+        <div class="sub">ADVANCED · 挖掘业务逻辑漏洞</div>
+        <div class="compare-row"><div class="k">目标</div><div class="v">挖掘"能运行但业务规则已被绕过"的隐藏 Bug</div></div>
+        <div class="compare-row"><div class="k">视角</div><div class="v"><b>真实用户 / 恶意用户视角</b> · 主动试探边界</div></div>
+        <div class="compare-row"><div class="k">方法</div><div class="v">重复点击、流程绕过、状态丢失、无限领取、越权访问、跨功能冲突</div></div>
+        <div class="compare-row"><div class="k">发现</div><div class="v">隐性漏洞 · 无报错但业务已崩</div></div>
+        <div class="compare-row"><div class="k">典型问题</div><div class="v">无限签到、重复领券、订单重复创建、越权读取他人数据</div></div>
+        <div class="compare-row"><div class="k">价值</div><div class="v">确保项目"上线后不会被击穿"</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ANALYSIS EXAMPLE ===== -->
+<section class="sec" id="analysis">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">项目分析结果 · 示例</div>
+      <h2>AI 先理解你的项目，<br/>再决定<span class="hl">从哪里开始测</span>。</h2>
+      <p class="sec-desc">测试不是盲目遍历。AI 会先分析项目类型、技术栈、用户角色、业务状态，并标记高风险区域，让测试资源集中在最容易出问题的地方。</p>
+    </div>
+
+    <div class="analysis reveal">
+      <div class="panel">
+        <div class="panel-head">
+          <h4>// 功能地图 · 风险标记</h4>
+          <span class="meta">12 功能 · 4 高风险 · 3 中风险</span>
+        </div>
+        <div class="panel-body">
+          <div class="feature-map">
+            <div class="feat risk"><span class="n">RISK</span>每日签到</div>
+            <div class="feat risk"><span class="n">RISK</span>积分发放</div>
+            <div class="feat risk"><span class="n">RISK</span>积分兑换</div>
+            <div class="feat risk"><span class="n">RISK</span>订单创建</div>
+            <div class="feat warn"><span class="n">WARN</span>优惠券领取</div>
+            <div class="feat warn"><span class="n">WARN</span>支付回调</div>
+            <div class="feat warn"><span class="n">WARN</span>用户权限</div>
+            <div class="feat"><span class="n">OK</span>商品列表</div>
+            <div class="feat"><span class="n">OK</span>购物车</div>
+            <div class="feat"><span class="n">OK</span>收货地址</div>
+            <div class="feat"><span class="n">OK</span>订单查询</div>
+            <div class="feat"><span class="n">OK</span>个人中心</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h4>// 项目分析摘要</h4>
+          <span class="meta">scan · 00:42</span>
+        </div>
+        <div class="panel-body">
+          <div class="info-list">
+            <div class="info-row"><div class="k">项目类型</div><div class="v">Web 应用 · 积分商城</div></div>
+            <div class="info-row"><div class="k">技术栈</div><div class="v"><span class="pill">Next.js</span><span class="pill">Prisma</span><span class="pill">PostgreSQL</span></div></div>
+            <div class="info-row"><div class="k">用户角色</div><div class="v">普通用户 · VIP · 管理员</div></div>
+            <div class="info-row"><div class="k">业务状态</div><div class="v">12 核心功能 / 3 积分相关 / 2 支付相关</div></div>
+            <div class="info-row"><div class="k">高风险区</div><div class="v" style="color:var(--critical)">签到 · 积分发放 · 订单创建 · 权限校验</div></div>
+            <div class="info-row"><div class="k">测试策略</div><div class="v">优先覆盖高风险区，重点测试频率限制与状态校验</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEST REPORT & AI FIX PACK ===== -->
+<section class="sec" id="report">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">测试报告 + AI 修复包 · 示例</div>
+      <h2>不只告诉你哪里错了，<br/>还给你<span class="hl">能直接粘贴的修复指令</span>。</h2>
+      <p class="sec-desc">每个问题都包含复现步骤、业务影响、证据，以及一段可直接交给编程 AI 的修复指令。复制 → 粘贴 → 修复 → 复测，闭环。</p>
+    </div>
+
+    <div class="reports reveal">
+      <div class="issue-card">
+        <div class="issue-head">
+          <div class="top">
+            <span class="issue-id">ISSUE-001 · 高级业务测试</span>
+            <span class="sev sev-crit">CRITICAL</span>
+          </div>
+          <h4>签到接口缺少频率限制，可无限领取积分</h4>
+        </div>
+        <div class="issue-body">
+          <div class="issue-sec">
+            <div class="lbl">复现步骤</div>
+            <div class="cnt">
+              <ol>
+                <li>登录任意普通用户账号</li>
+                <li>调用 <code>POST /api/sign</code> 接口</li>
+                <li>在同一日内连续请求 100 次</li>
+                <li>观察返回结果与积分余额变化</li>
+              </ol>
+            </div>
+          </div>
+          <div class="issue-sec">
+            <div class="lbl">业务影响</div>
+            <div class="cnt">用户可在数秒内获得任意积分，兑换高价值商品，积分经济体系瞬间崩溃。攻击者可批量注册账号套利。</div>
+          </div>
+          <div class="issue-sec">
+            <div class="lbl">证据</div>
+            <div class="cnt">100 次请求全部返回 <code>200 OK</code>，积分余额从 0 增长至 1000，无任何频率限制触发。</div>
+          </div>
+          <div class="issue-sec">
+            <div class="lbl">AI 修复指令包</div>
+            <div class="fix-pack">
+              <span class="copy">复制</span>
+              <div><span class="c"># 修复 ISSUE-001</span></div>
+              <div><span class="k">在</span> <span class="s">/api/sign</span> <span class="k">接口添加每日频率限制：</span></div>
+              <div><span class="k">1.</span> 使用 Redis 记录 <span class="s">sign:{userId}:{date}</span></div>
+              <div><span class="k">2.</span> 接口入口校验该 key 是否存在</div>
+              <div><span class="k">3.</span> 已存在则返回 <span class="v">409</span> <span class="s">"今日已签到"</span></div>
+              <div><span class="k">4.</span> 签到成功后写入 key，TTL <span class="v">86400</span>s</div>
+              <div><span class="k">5.</span> 数据库添加 <span class="s">(userId, date)</span> 唯一索引兜底</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="issue-card high">
+        <div class="issue-head">
+          <div class="top">
+            <span class="issue-id">ISSUE-002 · 高级业务测试</span>
+            <span class="sev sev-high">HIGH</span>
+          </div>
+          <h4>订单创建接口缺少幂等性，可重复创建订单</h4>
+        </div>
+        <div class="issue-body">
+          <div class="issue-sec">
+            <div class="lbl">复现步骤</div>
+            <div class="cnt">
+              <ol>
+                <li>将商品加入购物车并进入结算</li>
+                <li>拦截 <code>POST /api/order</code> 请求</li>
+                <li>在 1 秒内重放该请求 5 次</li>
+                <li>观察订单列表与库存变化</li>
+              </ol>
+            </div>
+          </div>
+          <div class="issue-sec">
+            <div class="lbl">业务影响</div>
+            <div class="cnt">同一笔结算生成 5 个订单，库存被重复扣减，用户支付一笔即可完成多笔订单，造成直接资金损失。</div>
+          </div>
+          <div class="issue-sec">
+            <div class="lbl">证据</div>
+            <div class="cnt">5 次请求返回 5 个不同 <code>orderId</code>，库存从 100 降至 95，仅 1 笔订单被实际支付。</div>
+          </div>
+          <div class="issue-sec">
+            <div class="lbl">AI 修复指令包</div>
+            <div class="fix-pack">
+              <span class="copy">复制</span>
+              <div><span class="c"># 修复 ISSUE-002</span></div>
+              <div><span class="k">为</span> <span class="s">/api/order</span> <span class="k">接口实现幂等性：</span></div>
+              <div><span class="k">1.</span> 客户端生成唯一 <span class="s">idempotency_key</span></div>
+              <div><span class="k">2.</span> 服务端用 Redis <span class="s">SET NX</span> 锁定该 key</div>
+              <div><span class="k">3.</span> 已存在则返回原订单结果</div>
+              <div><span class="k">4.</span> 数据库事务内扣库存 + 创建订单</div>
+              <div><span class="k">5.</span> 添加 <span class="s">乐观锁</span> 防止库存超卖</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TARGET USERS ===== -->
+<section class="sec" id="users">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">目标用户</div>
+      <h2>为<span class="hl">没有测试团队</span>的人，<br/>配一个 AI 测试工程师。</h2>
+      <p class="sec-desc">如果你用 AI 编程工具做产品，但又没有专职测试，这个产品就是为你准备的。</p>
+    </div>
+
+    <div class="users reveal">
+      <div class="user-card">
+        <div class="role">USER · 01</div>
+        <h4>个人开发者</h4>
+        <p>用 AI 编程工具独立开发网站或应用。一个人就是一支团队，没有时间也没有精力做完整测试。需要 AI 在上线前帮你找到那些你没空测的业务漏洞。</p>
+      </div>
+      <div class="user-card">
+        <div class="role">USER · 02</div>
+        <h4>非技术创业者</h4>
+        <p>用 AI 把想法快速变成可运行的产品，但无法判断代码是否真的"安全可用"。需要 AI 用人话告诉你哪里有风险、怎么修、修没修好。</p>
+      </div>
+      <div class="user-card">
+        <div class="role">USER · 03</div>
+        <h4>小型开发团队</h4>
+        <p>3-5 人的小团队，没有专职测试工程师。希望把重复的回归测试和业务边界测试交给 AI，让人力集中在产品迭代上。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VALUE ===== -->
+<section class="sec" id="value">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">产品价值</div>
+      <h2>把"用户投诉才发现 Bug"，<br/>变成<span class="hl">"上线前主动发现"</span>。</h2>
+      <p class="sec-desc">不是又一个代码检测工具，而是第一个真正从业务正确性出发、为 AI 时代项目设计的智能测试中心。</p>
+    </div>
+
+    <div class="values reveal">
+      <div class="value">
+        <div class="num">VALUE · 01</div>
+        <h4>主动发现，而非被动等待</h4>
+        <p>不再依赖用户投诉或线上事故暴露问题。AI 主动从真实用户视角挖掘业务漏洞，把风险拦截在上线之前。</p>
+      </div>
+      <div class="value">
+        <div class="num">VALUE · 02</div>
+        <h4>让非技术用户也能拥有测试能力</h4>
+        <p>无需懂代码、无需懂测试用例设计。AI 用业务语言输出问题与影响，让创业者也能看懂"哪里会出事"。</p>
+      </div>
+      <div class="value">
+        <div class="num">VALUE · 03</div>
+        <h4>修复指令直达编程 AI，闭环</h4>
+        <p>问题报告不是终点。生成的修复指令可直接粘贴给编程 AI，修复后自动复测，形成"发现 → 修复 → 验证"完整闭环。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROADMAP ===== -->
+<section class="sec" id="roadmap">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">后续扩展能力</div>
+      <h2>从业务 Bug 测试出发，<br/>逐步构建<span class="hl">完整测试体系</span>。</h2>
+      <p class="sec-desc">高级业务测试是起点。未来会沿着"AI 项目最容易出问题的方向"持续扩展，让测试覆盖更多维度。</p>
+    </div>
+
+    <div class="roadmap reveal">
+      <div class="road-card now">
+        <div class="phase">PHASE 01 · 当前</div>
+        <h4>业务 Bug 智能测试</h4>
+        <p>基础测试 + 高级业务测试 + AI 修复指令包 + 复测回归。核心闭环已具备。</p>
+      </div>
+      <div class="road-card">
+        <div class="phase">PHASE 02 · 规划中</div>
+        <h4>性能与并发测试</h4>
+        <p>模拟高并发签到、秒杀、抢券场景，发现竞态条件、库存超卖、连接池耗尽等问题。</p>
+      </div>
+      <div class="road-card">
+        <div class="phase">PHASE 03 · 规划中</div>
+        <h4>安全渗透测试</h4>
+        <p>从攻击者视角检测越权、注入、敏感信息泄露、会话劫持等安全漏洞。</p>
+      </div>
+      <div class="road-card">
+        <div class="phase">PHASE 04 · 规划中</div>
+        <h4>持续集成接入</h4>
+        <p>接入 CI/CD 流水线，每次代码提交自动触发业务回归测试，让 AI 项目持续安全。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section class="cta-sec" id="cta">
+  <div class="cta-bg"></div>
+  <div class="wrap">
+    <div class="cta-inner reveal">
+      <h2>提交你的项目，<br/>让 AI 在上线前找到那个<br/><span class="hl">会击穿你业务的 Bug</span>。</h2>
+      <p>读取代码、分析业务、主动挖掘漏洞、生成修复指令、复测回归。一个完整的 AI 测试闭环，等你启动。</p>
+      <div class="cta-buttons">
+        <a href="#top" class="btn btn-primary">
+          立即提交项目
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#case" class="btn btn-ghost">再看一遍案例</a>
+      </div>
+      <div class="cta-note">TRAE AI 创造力大赛 · 学习工作赛道 · AI项目智能测试中心</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap foot-inner">
+    <div class="left"><b>AI项目智能测试中心</b> · 在用户发现之前，先找到 AI 代码里的业务漏洞</div>
+    <div class="right">TRAE AI Creativity Competition · 2026</div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches){
+      els.forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    },{threshold:.12, rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  })();
+
+  // Animate progress bars when visible
+  (function(){
+    var bars = document.querySelectorAll('.bar i[data-w]');
+    if(!('IntersectionObserver' in window)){
+      bars.forEach(function(b){ b.style.width = b.getAttribute('data-w') + '%'; });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.style.width = e.target.getAttribute('data-w') + '%';
+          io.unobserve(e.target);
+        }
+      });
+    },{threshold:.4});
+    bars.forEach(function(b){ io.observe(b); });
+  })();
+
+  // Copy fix-pack
+  document.querySelectorAll('.fix-pack .copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pack = btn.parentElement;
+      var text = pack.innerText.replace('复制','').trim();
+      if(navigator.clipboard){
+        navigator.clipboard.writeText(text).then(function(){
+          var t = btn.textContent; btn.textContent='已复制';
+          setTimeout(function(){ btn.textContent=t; },1400);
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>
