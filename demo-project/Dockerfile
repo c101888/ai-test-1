@@ -6,11 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
-# Render 会在构建时注入 NODE_ENV=production，导致 npm ci 跳过 devDependencies
-# tailwindcss 在 devDependencies，缺失会导致 PostCSS 不处理 CSS → 样式丢失
-# 解决：npm ci 时临时清空 NODE_ENV，确保 devDependencies 被安装
 COPY package.json package-lock.json* ./
-RUN NODE_ENV= npm ci || NODE_ENV= npm install
+RUN npm ci || npm install
 
 COPY . .
 RUN npx prisma generate
