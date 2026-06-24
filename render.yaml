@@ -1,0 +1,37 @@
+# Render Blueprint - 一键部署两个服务
+# 使用方法：在 Render 界面连接 GitHub 仓库后选择 "Use Blueprint" 即可
+
+services:
+  - type: web
+    name: test-center
+    env: docker
+    repo: https://github.com/c101888/ai-test-1
+    branch: main
+    rootDir: test-center
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+    healthCheckPath: /
+    autoDeploy: true
+
+  - type: web
+    name: demo-project
+    env: docker
+    repo: https://github.com/c101888/ai-test-1
+    branch: main
+    rootDir: demo-project
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4010"
+    healthCheckPath: /
+    autoDeploy: true
