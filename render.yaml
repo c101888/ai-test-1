@@ -1,15 +1,14 @@
-# Render Blueprint - Node 原生运行时（不用 Docker）
+# Render Blueprint - Docker 构建（用 webpack 而非 Turbopack）
 services:
   - type: web
     name: test-center
-    runtime: node
+    runtime: docker
     repo: https://github.com/c101888/ai-test-1
     branch: main
     rootDir: test-center
     region: singapore
     plan: free
-    buildCommand: npm ci || npm install
-    startCommand: npm run start
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
@@ -20,14 +19,13 @@ services:
 
   - type: web
     name: demo-project
-    runtime: node
+    runtime: docker
     repo: https://github.com/c101888/ai-test-1
     branch: main
     rootDir: demo-project
     region: singapore
     plan: free
-    buildCommand: npm ci || npm install
-    startCommand: npx prisma db push && npm run start
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
