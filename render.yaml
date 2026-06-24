@@ -1,12 +1,14 @@
-# Render Blueprint - 使用 ghcr.io 预构建镜像部署
+# Render Blueprint - 从 Dockerfile 构建
 services:
   - type: web
     name: test-center
-    runtime: image
-    image:
-      imagePath: ghcr.io/c101888/test-center:latest
+    runtime: docker
+    repo: https://github.com/c101888/ai-test-1
+    branch: main
+    rootDir: test-center
     region: singapore
     plan: free
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
@@ -17,11 +19,13 @@ services:
 
   - type: web
     name: demo-project
-    runtime: image
-    image:
-      imagePath: ghcr.io/c101888/demo-project:latest
+    runtime: docker
+    repo: https://github.com/c101888/ai-test-1
+    branch: main
+    rootDir: demo-project
     region: singapore
     plan: free
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
